@@ -98,7 +98,7 @@ evaluate_col_agent(){
         experiment.evaluate_transformer="collective_network" \
         experiment.experiment="${EXPERIMENT_NAME}" \
         setup.seed="${SEED}" \
-        "${tf_args[@]}" \
+        ${tf_args[@]+"${tf_args[@]}"} \
         "${SCRIPT_EXTRA_ARGS[@]}" > "$log_file" 2>&1
 }
 
@@ -146,7 +146,7 @@ evaluate_predictive_adapter(){
         experiment.mode=evaluate_predictive_adapter \
         experiment.experiment="${EXPERIMENT_NAME}" \
         setup.seed="${SEED}" \
-        "${tf_args[@]}" \
+        ${tf_args[@]+"${tf_args[@]}"} \
         "${SCRIPT_EXTRA_ARGS[@]}"
 }
 

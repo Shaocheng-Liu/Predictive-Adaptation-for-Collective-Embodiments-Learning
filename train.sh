@@ -143,7 +143,7 @@ train_predictive_adapter(){
         experiment.experiment="${EXPERIMENT_NAME}" \
         transformer_collective_network.predictive_adapter.load_on_init=False \
         setup.seed="${SEED}" \
-        "${tf_args[@]}" \
+        ${tf_args[@]+"${tf_args[@]}"} \
         "$@"
 }
 
@@ -174,7 +174,7 @@ distill_collective(){
         experiment.mode=distill_collective_transformer \
         experiment.experiment="${EXPERIMENT_NAME}" \
         setup.seed="${SEED}" \
-        "${tf_args[@]}" \
+        ${tf_args[@]+"${tf_args[@]}"} \
         "$@"
 }
 
