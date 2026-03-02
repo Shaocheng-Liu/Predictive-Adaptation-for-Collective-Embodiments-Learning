@@ -248,11 +248,13 @@ class Experiment(checkpointable.Checkpointable):
                     float(self.action_space.low.min()),
                     float(self.action_space.high.max()),
                 ],
+                experiment=self.config.experiment.experiment,
+                seed=self.config.setup.seed,
                 device=self.device,
             )
                 
             self.col_model_dir = utils.make_dir(
-                os.path.join(self.config.setup.save_dir, "model_dir/model_col")
+                os.path.join(self.config.setup.save_dir, "model_dir", self.config.experiment.experiment, f"model_col_seed_{self.config.setup.seed}")
             )
             self.buffer_dir_distill = [utils.make_dir(
                 os.path.join(self.config.setup.save_dir, f"buffer/collective_buffer/train/{i}")
@@ -304,13 +306,15 @@ class Experiment(checkpointable.Checkpointable):
                     float(self.action_space.low.min()),
                     float(self.action_space.high.max()),
                 ],
+                experiment=self.config.experiment.experiment,
+                seed=self.config.setup.seed,
                 device=self.device,
             )
             
             # 2) Set model directory and load model
             #    Here we reuse the model directory configuration from 'distill_collective_transformer'
             self.col_model_dir = utils.make_dir(
-                os.path.join(self.config.setup.save_dir, "model_dir/model_col")
+                os.path.join(self.config.setup.save_dir, "model_dir", self.config.experiment.experiment, f"model_col_seed_{self.config.setup.seed}")
             )
             print(f"Loading collective agent (with predictive adapter) from: {self.col_model_dir}")
             self.col_start_step = self.col_agent.load_latest_step(model_dir=self.col_model_dir)
@@ -355,11 +359,13 @@ class Experiment(checkpointable.Checkpointable):
                         float(self.action_space.low.min()),
                         float(self.action_space.high.max()),
                     ],
+                    experiment=self.config.experiment.experiment,
+                    seed=self.config.setup.seed,
                     device=self.device,
                 )
 
                 self.col_model_dir = utils.make_dir(
-                    os.path.join(self.config.setup.save_dir, "model_dir/model_col")
+                    os.path.join(self.config.setup.save_dir, "model_dir", self.config.experiment.experiment, f"model_col_seed_{self.config.setup.seed}")
                 )
 
                 self.col_start_step = self.col_agent.load_latest_step(model_dir=self.col_model_dir)
@@ -483,12 +489,14 @@ class Experiment(checkpointable.Checkpointable):
                     float(self.action_space.low.min()),
                     float(self.action_space.high.max()),
                 ],
+                experiment=self.config.experiment.experiment,
+                seed=self.config.setup.seed,
                 device=self.device,
             )
 
             # 2) Model save directory (dedicated to predictive adapter)
             self.col_model_dir = utils.make_dir(
-                os.path.join(self.config.setup.save_dir, f"model_dir/model_predictive_adapter_seed_{self.config.setup.seed}")
+                os.path.join(self.config.setup.save_dir, "model_dir", self.config.experiment.experiment, f"model_predictive_adapter_seed_{self.config.setup.seed}")
             )
 
             # 3) Training data: aggregate train split collective buffers (same approach as distill_collective_transformer)
