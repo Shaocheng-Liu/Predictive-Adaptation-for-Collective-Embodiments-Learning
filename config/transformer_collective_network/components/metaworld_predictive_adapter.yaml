@@ -1,0 +1,26 @@
+# @package transformer_collective_network.predictive_adapter
+
+# Latent space dimension
+latent_dim: 512
+
+# Encoder configuration
+num_enc_layers: 2  # Number of encoder layers (2-5 as per TD-MPC2)
+enc_dim: 256       # Hidden dimension for encoder layers
+
+# Dynamics and reward model configuration  
+mlp_dim: 512       # Hidden dimension for dynamics and reward MLPs
+
+# Reward model configuration
+reward_bins: 101  # Discretized reward prediction bins
+
+dropout: 0.1
+# Simplicial normalization dimension
+simnorm_dim: 8
+
+# Predictive adapter training parameters
+reward_bounds: [-10, 10]  # Min/max reward for discretization
+
+pretrained_dir: "${project_root}/logs/experiment_test/model_dir/model_predictive_adapter"  # Directory where the world model was saved during training
+pretrained_step: null                                      # Specify an integer step; null means auto-find metadata or latest
+freeze_after_load: true                                     # Typically do not train the world model further during distillation
+load_on_init: true

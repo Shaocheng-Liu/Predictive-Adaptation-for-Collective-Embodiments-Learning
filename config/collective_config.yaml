@@ -1,0 +1,35 @@
+defaults:
+  - setup: metaworld
+  - experiment: collective_${defaults.0.setup}
+  - worker: worker_sac
+  - worker/components: ${defaults.0.setup}_actor
+  - worker/components: ${defaults.0.setup}_critic
+  - worker/components: ${defaults.0.setup}_encoder
+  - worker/components: ${defaults.0.setup}_transition_model
+  - worker/components: ${defaults.0.setup}_mask
+  - worker/components: ${defaults.0.setup}_multitask
+  - worker/components: ${defaults.0.setup}_gradnorm
+  - worker/components: ${defaults.0.setup}_task_to_encoder_cluster
+  - worker/optimizers: ${defaults.0.setup}_actor
+  - worker/optimizers: ${defaults.0.setup}_alpha
+  - worker/optimizers: ${defaults.0.setup}_critic
+  - worker/optimizers: ${defaults.0.setup}_decoder
+  - worker/optimizers: ${defaults.0.setup}_encoder
+  
+  - transformer_collective_network: transformer_collective_sac
+  - transformer_collective_network/components: ${defaults.0.setup}_actor
+  - transformer_collective_network/components: ${defaults.0.setup}_critic
+  - transformer_collective_network/components: ${defaults.0.setup}_transformer_encoder
+  - transformer_collective_network/components: ${defaults.0.setup}_predictive_adapter
+  - transformer_collective_network/optimizers: ${defaults.0.setup}_actor
+  - transformer_collective_network/optimizers: ${defaults.0.setup}_critic
+  - transformer_collective_network/optimizers: ${defaults.0.setup}_alpha
+  - transformer_collective_network/optimizers: ${defaults.0.setup}_transformer_encoder
+  - transformer_collective_network/optimizers: ${defaults.0.setup}_predictive_adapter
+
+  - env: ???
+  - replay_buffer: mtrl
+  - logger: mtrl
+  - metrics: ${defaults.0.setup}
+  - logbook: mtrl
+project_root: ${env:PROJECT_ROOT}

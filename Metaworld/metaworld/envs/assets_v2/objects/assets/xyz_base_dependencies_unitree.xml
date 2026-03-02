@@ -1,0 +1,34 @@
+<mujocoinclude>
+    <compiler angle="radian" autolimits="true" inertiafromgeom="auto" inertiagrouprange="4 5"/>
+    <option integrator="implicitfast"/>
+    <asset>
+      <material name="xyz_col" rgba="0.3 0.3 1.0 0.5" shininess="0" specular="0.5"/>
+
+      <mesh file="assets/z1_Link00.stl"/>
+      <mesh file="assets/z1_Link01.stl"/>
+      <mesh file="assets/z1_Link02.stl"/>
+      <mesh file="assets/z1_Link03.stl"/>
+      <mesh file="assets/z1_Link04.stl"/>
+      <mesh file="assets/z1_Link05.stl"/>
+      <mesh file="assets/z1_Link06.stl"/>
+      <mesh file="../objects/meshes/xyz_base/base.stl" name="base"/>
+      <mesh file="../objects/meshes/xyz_base/eGripperBase.stl" name="eGripperBase"/>
+      <mesh file="../objects/meshes/xyz_base/head.stl" name="head"/>
+    </asset>
+
+    <default>
+    <default class="z1">
+      <joint damping="1" frictionloss="1"/>
+      <general biastype="affine" gainprm="1000" biasprm="0 -1000 -100" forcerange="-30 30"/>
+      <default class="visual">
+        <geom type="mesh" group="2" contype="0" conaffinity="0"/>
+      </default>
+      <default class="collision">
+        <geom type="cylinder" group="3" mass="0" density="0"/>
+      </default>
+    </default>
+    <default class="base_col">
+          <geom conaffinity="1" condim="4" contype="1" group="4" margin="0.001" material="xyz_col" solimp=".8 .9 .01" solref=".02 1"/>
+      </default>
+  </default>
+</mujocoinclude>

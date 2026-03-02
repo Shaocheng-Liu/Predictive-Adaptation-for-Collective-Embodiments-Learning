@@ -1,0 +1,63 @@
+<mujocoinclude>
+    <compiler angle="radian" autolimits="true" inertiafromgeom="auto" inertiagrouprange="4 5"/>
+    <option integrator="implicitfast"/>
+
+    <asset>
+        <texture type="2d" file="assets/interbotix_black.png"/>
+        <material name="black" texture="interbotix_black"/>
+        <material name="xyz_col" rgba="0.3 0.3 1.0 0.5" shininess="0" specular="0.5"/>
+
+        <mesh file="assets/vx300s_1_base.stl" scale="0.001 0.001 0.001"/>
+        <mesh file="assets/vx300s_2_shoulder.stl" scale="0.001 0.001 0.001"/>
+        <mesh file="assets/vx300s_3_upper_arm.stl" scale="0.001 0.001 0.001"/>
+        <mesh file="assets/vx300s_4_upper_forearm.stl" scale="0.001 0.001 0.001"/>
+        <mesh file="assets/vx300s_5_lower_forearm.stl" scale="0.001 0.001 0.001"/>
+        <mesh file="assets/vx300s_6_wrist.stl" scale="0.001 0.001 0.001"/>
+
+        <mesh file="../objects/meshes/xyz_base/base.stl" name="base"/>
+        <mesh file="../objects/meshes/xyz_base/eGripperBase.stl" name="eGripperBase"/>
+        <mesh file="../objects/meshes/xyz_base/head.stl" name="head"/>
+    </asset>
+
+    <default>
+        <default class="vx300s">
+            <joint axis="0 1 0"/>
+            <position forcerange="-35 35"/>
+            
+            <default class="waist">
+                <joint axis="0 0 1" range="-3.14158 3.14158" damping="2.86"/>
+                <position ctrlrange="-3.14158 3.14158" kp="25"/>
+            </default>
+            <default class="shoulder">
+                <joint range="-1.85005 1.25664" armature="0.004" frictionloss="0.06" damping="6.25"/>
+                <position ctrlrange="-1.85005 1.25664" kp="76" forcerange="-57 57"/>
+            </default>
+            <default class="elbow">
+                <joint range="-1.76278 1.6057" armature="0.072" frictionloss="1.74" damping="8.15"/>
+                <position ctrlrange="-1.76278 1.6057" kp="106" forcerange="-25 25"/>
+            </default>
+            <default class="forearm_roll">
+                <joint axis="1 0 0" range="-3.14158 3.14158" armature="0.060" damping="3.07"/>
+                <position ctrlrange="-3.14158 3.14158" kp="35" forcerange="-10 10"/>
+            </default>
+            <default class="wrist_angle">
+                <joint range="-1.8675 2.23402" damping="1.18"/>
+                <position ctrlrange="-1.8675 2.23402" kp="8"/>
+            </default>
+            <default class="wrist_rotate">
+                <joint axis="1 0 0" range="-3.14158 3.14158" damping="0.78"/>
+                <position ctrlrange="-3.14158 3.14158" kp="7"/>
+            </default>
+
+            <default class="visual">
+                <geom type="mesh" contype="0" conaffinity="0" density="0" group="2" material="black"/>
+            </default>
+            <default class="collision">
+                <geom group="3" type="mesh"/>
+            </default>
+        </default>
+        <default class="base_col">
+                <geom conaffinity="1" condim="4" contype="1" group="4" margin="0.001" material="xyz_col" solimp=".8 .9 .01" solref=".02 1"/>
+            </default>
+    </default>
+</mujocoinclude>
