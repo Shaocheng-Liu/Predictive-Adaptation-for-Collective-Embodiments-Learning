@@ -17,6 +17,18 @@
 
 set -euo pipefail
 
+### ===================== Configurable Variables ===================== ###
+# Experiment name — controls which experiment model directory is used.
+# Change this to switch between different experiment configurations.
+EXPERIMENT_NAME="${EXPERIMENT_NAME:-none}"
+
+# Seed for reproducibility
+SEED="${SEED:-1}"
+
+# Transformer model path — override the default representation transformer checkpoint.
+# If empty, the default path from the config YAML will be used.
+TRANSFORMER_PATH="${TRANSFORMER_PATH:-}"
+
 ### ===================== Helper Functions ===================== ###
 
 # --- Remove saved models ---
@@ -57,9 +69,11 @@ train_task(){
         env=metaworld-mt1 \
         worker.multitask.num_envs=1 \
         experiment.mode=train_worker \
+        experiment.experiment="${EXPERIMENT_NAME}" \
         experiment.robot_type="${robot_type}" \
         env.benchmark.env_name="${task_name}" \
         experiment.num_train_steps="${nr_steps}" \
+        setup.seed="${SEED}" \
         "$@"
 }
 
@@ -80,8 +94,10 @@ online_distill(){
         env=metaworld-mt1 \
         worker.multitask.num_envs=1 \
         experiment.mode=online_distill_collective_transformer \
+        experiment.experiment="${EXPERIMENT_NAME}" \
         env.benchmark.env_name="${task_name}" \
         experiment.robot_type="${robot_type}" \
+        setup.seed="${SEED}" \
         "$@"
 }
 
@@ -110,13 +126,24 @@ generate_distill_data(){
 
 # --- Step 3a: Train predictive adapter ---
 train_predictive_adapter(){
+    local tf_args=()
+    if [[ -n "$TRANSFORMER_PATH" ]]; then
+        tf_args+=(
+            "transformer_collective_network.transformer_encoder.representation_transformer.model_path=${TRANSFORMER_PATH}"
+            "transformer_collective_network.transformer_encoder.prediction_head_cls.model_path=${TRANSFORMER_PATH}"
+        )
+    fi
+
     echo "=== Training predictive adapter ==="
     python3 -u main.py \
         setup=metaworld \
         env=metaworld-mt1 \
         worker.multitask.num_envs=1 \
         experiment.mode=train_predictive_adapter \
+        experiment.experiment="${EXPERIMENT_NAME}" \
         transformer_collective_network.predictive_adapter.load_on_init=False \
+        setup.seed="${SEED}" \
+        ${tf_args[@]+"${tf_args[@]}"} \
         "$@"
 }
 
@@ -131,12 +158,23 @@ train_transformer(){
 
 # --- Step 4: Distill collective transformer ---
 distill_collective(){
+    local tf_args=()
+    if [[ -n "$TRANSFORMER_PATH" ]]; then
+        tf_args+=(
+            "transformer_collective_network.transformer_encoder.representation_transformer.model_path=${TRANSFORMER_PATH}"
+            "transformer_collective_network.transformer_encoder.prediction_head_cls.model_path=${TRANSFORMER_PATH}"
+        )
+    fi
+
     echo "=== Distilling collective transformer ==="
     python3 -u main.py \
         setup=metaworld \
         env=metaworld-mt1 \
         worker.multitask.num_envs=1 \
         experiment.mode=distill_collective_transformer \
+        experiment.experiment="${EXPERIMENT_NAME}" \
+        setup.seed="${SEED}" \
+        ${tf_args[@]+"${tf_args[@]}"} \
         "$@"
 }
 

@@ -52,6 +52,9 @@ class TransformerAgent:
         dropout,
         cls_alpha,
         loss_reduction: str = "mean",
+        # experiment identification
+        experiment: str = "none",
+        seed: int = 1,
         # predictive adapter parameters
         use_predictive_adapter: bool=False,
         predictive_adapter_cfg: Optional[ConfigType] = None,

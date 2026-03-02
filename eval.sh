@@ -7,10 +7,27 @@
 #   bash eval.sh                          # Evaluate all robots on all tasks
 #   bash eval.sh sawyer                   # Evaluate a specific robot
 #   bash eval.sh sawyer reach-v2          # Evaluate a specific robot+task
+#   bash eval.sh sawyer 3 my_exp          # Evaluate with seed=3 and experiment=my_exp
 #   bash eval.sh --all setup.seed=5       # Evaluate all with extra args
+#
+# Environment variables:
+#   EXPERIMENT_NAME  — experiment identifier (default: "none")
+#   SEED             — random seed (default: "1")
+#   TRANSFORMER_PATH — override transformer checkpoint path (default: uses config)
 # ==============================================================================
 
 set -euo pipefail
+
+### ===================== Configurable Variables ===================== ###
+# Experiment name — controls which experiment model directory is used.
+EXPERIMENT_NAME="${EXPERIMENT_NAME:-none}"
+
+# Seed for reproducibility
+SEED="${SEED:-1}"
+
+# Transformer model path — override the default representation transformer checkpoint.
+# If empty, the default path from the config YAML will be used.
+TRANSFORMER_PATH="${TRANSFORMER_PATH:-}"
 
 SCRIPT_EXTRA_ARGS=()
 EVAL_ROBOT=""
@@ -58,11 +75,18 @@ evaluate_col_agent(){
         return 1
     fi
 
-    echo "Evaluating collective network: robot=${robot_type}, task=${task_name}"
-    local log_dir="${PROJECT_ROOT}/logs/results/col/${task_name}"
+    local tf_args=()
+    if [[ -n "$TRANSFORMER_PATH" ]]; then
+        tf_args+=(
+            "transformer_collective_network.transformer_encoder.representation_transformer.model_path=${TRANSFORMER_PATH}"
+            "transformer_collective_network.transformer_encoder.prediction_head_cls.model_path=${TRANSFORMER_PATH}"
+        )
+    fi
+
+    echo "Evaluating collective network: robot=${robot_type}, task=${task_name}, experiment=${EXPERIMENT_NAME}"
+    local log_dir="${PROJECT_ROOT}/logs/results/col/${task_name}_${EXPERIMENT_NAME}"
     mkdir -p "$log_dir"
-    local timestamp=$(date +%Y%m%d_%H%M%S)
-    local log_file="${log_dir}/eval_${robot_type}_${timestamp}.log"
+    local log_file="${log_dir}/eval_${robot_type}_seed_${SEED}.log"
 
     python3 -u main.py \
         setup=metaworld \
@@ -72,6 +96,9 @@ evaluate_col_agent(){
         experiment.mode=evaluate_collective_transformer \
         env.benchmark.env_name="$task_name" \
         experiment.evaluate_transformer="collective_network" \
+        experiment.experiment="${EXPERIMENT_NAME}" \
+        setup.seed="${SEED}" \
+        ${tf_args[@]+"${tf_args[@]}"} \
         "${SCRIPT_EXTRA_ARGS[@]}" > "$log_file" 2>&1
 }
 
@@ -96,17 +123,30 @@ evaluate_expert(){
         experiment.robot_type="${robot_type}" \
         env.benchmark.env_name="${task_name}" \
         experiment.evaluate_transformer="agent" \
+        experiment.experiment="${EXPERIMENT_NAME}" \
+        setup.seed="${SEED}" \
         "${SCRIPT_EXTRA_ARGS[@]}" | tee -a "$result_path"
 }
 
 # --- Evaluate predictive adapter ---
 evaluate_predictive_adapter(){
+    local tf_args=()
+    if [[ -n "$TRANSFORMER_PATH" ]]; then
+        tf_args+=(
+            "transformer_collective_network.transformer_encoder.representation_transformer.model_path=${TRANSFORMER_PATH}"
+            "transformer_collective_network.transformer_encoder.prediction_head_cls.model_path=${TRANSFORMER_PATH}"
+        )
+    fi
+
     echo "=== Evaluating predictive adapter ==="
     python3 -u main.py \
         setup=metaworld \
         env=metaworld-mt1 \
         worker.multitask.num_envs=1 \
         experiment.mode=evaluate_predictive_adapter \
+        experiment.experiment="${EXPERIMENT_NAME}" \
+        setup.seed="${SEED}" \
+        ${tf_args[@]+"${tf_args[@]}"} \
         "${SCRIPT_EXTRA_ARGS[@]}"
 }
 

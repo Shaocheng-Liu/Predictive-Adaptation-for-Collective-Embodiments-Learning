@@ -1,5 +1,6 @@
 # @package _group_
 name: collective_metaworld
+experiment: "none"
 robot_type: sawyer # "ur5e" / "ur10e"
 mode: train_worker # train_worker/online_distill_collective_transformer/distill_collective_transformer/evaluate_collective_transformer/train_predictive_adapter/evaluate_predictive_adapter/generate_distill_data/record
 builder:
