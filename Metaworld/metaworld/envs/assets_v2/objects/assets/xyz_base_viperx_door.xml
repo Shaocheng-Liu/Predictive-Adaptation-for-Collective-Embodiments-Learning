@@ -1,0 +1,93 @@
+<mujocoinclude>
+  <camera pos="0 0.5 1.5" name="topview" />
+  <camera name="corner" mode="fixed" pos="-1.1 -0.4 0.6" xyaxes="-1 1 0 -0.2 -0.2 -1"/>
+  <camera name="corner2" fovy="60" mode="fixed" pos="1.3 -0.2 1.1" euler="3.9 2.3 0.6"/>
+  <camera name="corner3" fovy="45" mode="fixed" pos="0.9 0 1.5" euler="3.5 2.7 1"/>
+
+  <body name="base" pos="0 0.28 0.12" quat="0.707 0 0 0.707" childclass="vx300s">
+    <inertial pos="-0.0534774 -0.000562575 0.0205961" quat="-0.00292324 0.712517 0.00480387 0.701633" mass="0.969034"
+      diaginertia="0.0071633 0.00602451 0.00169819"/>
+    <geom quat="1 0 0 1" class="visual" mesh="vx300s_1_base" conaffinity="0" contype="0"/>
+    <geom quat="1 0 0 1" mesh="vx300s_1_base" class="collision" conaffinity="0" contype="0"/>
+    
+    <body name="shoulder_link" pos="0 0 0.079">
+      <inertial pos="0.000259233 -3.3552e-06 0.0116129" quat="-0.476119 0.476083 0.52279 0.522826" mass="0.798614"
+        diaginertia="0.00120156 0.00113744 0.0009388"/>
+      <joint name="waist" class="waist"/>
+      <geom pos="0 0 -0.003" quat="1 0 0 1" class="visual" mesh="vx300s_2_shoulder" conaffinity="0" contype="0"/>
+      <geom pos="0 0 -0.003" quat="1 0 0 1" mesh="vx300s_2_shoulder" class="collision" conaffinity="0" contype="0"/>
+      
+      <body name="upper_arm_link" pos="0 0 0.04805">
+        <inertial pos="0.0206949 4e-10 0.226459" quat="0 0.0728458 0 0.997343" mass="0.792592"
+          diaginertia="0.00911338 0.008925 0.000759317"/>
+        <joint name="shoulder" class="shoulder"/>
+        <geom quat="1 0 0 1" class="visual" mesh="vx300s_3_upper_arm"/>
+        <geom quat="1 0 0 1" class="collision" mesh="vx300s_3_upper_arm"/>
+        
+        <body name="upper_forearm_link" pos="0.05955 0 0.3">
+          <inertial pos="0.105723 0 0" quat="-0.000621631 0.704724 0.0105292 0.709403" mass="0.322228"
+            diaginertia="0.00144107 0.00134228 0.000152047"/>
+          <joint name="elbow" class="elbow"/>
+          <geom class="visual" mesh="vx300s_4_upper_forearm"/>
+          <geom class="collision" mesh="vx300s_4_upper_forearm"/>
+          
+          <body name="lower_forearm_link" pos="0.2 0 0">
+            <inertial pos="0.0513477 0.00680462 0" quat="-0.702604 -0.0796724 -0.702604 0.0796724" mass="0.414823"
+              diaginertia="0.0005911 0.000546493 0.000155707"/>
+            <joint name="forearm_roll" class="forearm_roll"/>
+            <geom quat="0 1 0 0" class="visual" mesh="vx300s_5_lower_forearm"/>
+            <geom quat="0 1 0 0" class="collision" mesh="vx300s_5_lower_forearm"/>
+            
+            <body name="wrist_link" pos="0.1 0 0">
+                <inertial pos="0.046743 -7.6652e-06 0.010565" quat="-0.00100191 0.544586 0.0026583 0.8387"
+                  mass="0.115395" diaginertia="5.45707e-05 4.63101e-05 4.32692e-05"/>
+                <joint name="wrist_angle" class="wrist_angle"/>
+                <geom quat="1 0 0 1" class="visual" mesh="vx300s_6_wrist"/>
+                <geom quat="1 0 0 1" class="collision" mesh="vx300s_6_wrist"/>
+                
+                <body name="ee_arm_link" pos="0.069744 0 0">
+                    <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+
+                    <joint name="wrist_rotate" class="wrist_rotate"/>
+                    
+                    <site name="attachment_site" pos="0 0 0" quat="1 0 0 1"/>
+
+                    <body name="hand" pos="0.05 0 0" quat="0 1 0 0">
+                    <camera name="behindGripper" mode="track" pos="0 0 -0.5" quat="0 1 0 0" fovy="60" />
+                    <camera name="gripperPOV" mode="track" pos="0 -0.1 0" quat="-1 -1.3 0 0" fovy="90" />
+
+                    <site name="endEffector" pos="0.04 0 0" size="0.01" rgba='1 1 1 0' />
+                    <geom name="rail" type="box" pos="-0.05 0 0" density="7850" size="0.005 0.055 0.005" rgba="0.5 0.5 0.5 1.0" condim="3" friction="2 0.1 0.002" />
+
+                    <body name="rightclaw" pos="0 -0.05 0">
+                      <geom class="base_col" name="rightclaw_it" condim="4" margin="0.001" type="box" user="0" pos="0 0 0" size="0.045 0.003 0.015" rgba="1 1 1 1.0" />
+                      <joint name="r_close" pos="0 0 0" axis="0 1 0" range= "0 0.04" armature="100" damping="1000" limited="true" type="slide"/>
+                      <site name="rightEndEffector" pos="0.045 0 0" size="0.01" rgba="1.0 0.0 0.0 1.0"/>
+                      <body name="rightpad" pos="0 .003 0">
+                        <geom name="rightpad_geom" condim="4" margin="0.001" type="box" user="0" pos="0 0 0" size="0.045 0.003 0.015" rgba="1 1 1 1.0" solimp="0.95 0.99 0.01" solref="0.01 1" friction="2 0.1 0.002" contype="1" conaffinity="1" mass="1"/>
+                      </body>
+                    </body>
+
+                    <body name="leftclaw" pos="0 0.05 0">
+                      <geom class="base_col" name="leftclaw_it" condim="4" margin="0.001" type="box" user="0" pos="0 0 0" size="0.045 0.003 0.015" rgba="0 1 1 1.0" />
+                      <joint name="l_close" pos="0 0 0" axis="0 1 0" range= "-0.03 0" armature="100" damping="1000" limited="true" type="slide"/>
+                      <site name="leftEndEffector" pos="0.045 0 0" size="0.01" rgba="1.0 0.0 0.0 1.0"/>
+                      <body name="leftpad" pos="0 -.003 0">
+                        <geom name="leftpad_geom" condim="4" margin="0.001" type="box" user="0" pos="0 0 0" size="0.045 0.003 0.015" rgba="0 1 1 1.0" solimp="0.95 0.99 0.01" solref="0.01 1" friction="2 0.1 0.002" contype="1" conaffinity="1" />
+                      </body>
+                    </body>
+                  </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </body>
+
+  <body mocap="true" name="mocap" pos="0 0 0">
+    <geom conaffinity="0" contype="0" pos="0 0 0" rgba="0.0 0.5 0.5 0" size="0.01" type="sphere"></geom>
+    <site name="mocap" pos="0 0 0" rgba="0.0 0.5 0.5 0" size="0.01" type="sphere"></site>
+  </body>
+
+</mujocoinclude>

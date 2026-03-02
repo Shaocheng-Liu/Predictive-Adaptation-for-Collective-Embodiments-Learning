@@ -1,0 +1,58 @@
+# type: ignore
+
+import gymnasium
+from gymnasium.envs.registration import register
+
+
+def register_once(id, entry_point, **kwargs):
+    if id not in gymnasium.envs.registry:
+    #if id not in gym.envs.registry.env_specs:
+        register(id=id, entry_point=entry_point, **kwargs)
+
+
+register_once(
+    id="cartpole-distribution-v0",
+    entry_point="codes.env.gym.cartpole:CartPoleEnv",
+    max_episode_steps=200,
+    reward_threshold=195.0,
+)
+
+
+register_once(
+    id="cartpole-distribution-v1",
+    entry_point="codes.env.gym.cartpole:CartPoleEnv",
+    max_episode_steps=500,
+    reward_threshold=475.0,
+)
+
+register_once(
+    id="halfcheetah-distribution-v0",
+    entry_point="codes.env.gym.half_cheetah:HalfCheetahEnvDistribution",
+    max_episode_steps=1000,
+    reward_threshold=4800.0,
+)
+try:
+    from mtrl.env.kuka_real_env import KukaRealEnv, create_kuka_real_env
+except ImportError:
+    # ROS or dependencies not available
+    pass
+
+try:
+    from mtrl.env.real_envs import (
+        KukaBaseRealEnv,
+        KukaReachEnv,
+        # KukaPushEnv,
+        # KukaPickPlaceEnv,
+        # KukaDoorOpenEnv,
+        # KukaWindowOpenEnv,
+        # KukaWindowCloseEnv,
+        # KukaDrawerOpenEnv,
+        # KukaButtonPressTopdownEnv,
+        # KukaFaucetOpenEnv,
+        # KukaPegInsertSideEnv,
+        create_real_env,
+        list_available_tasks,
+        TASK_ENV_MAP,
+    )
+except ImportError:
+    pass

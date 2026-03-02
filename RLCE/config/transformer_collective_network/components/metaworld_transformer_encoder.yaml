@@ -1,0 +1,62 @@
+# @package transformer_collective_network.transformer_encoder
+
+transformer:
+  _target_: mtrl.agent.components.transformer_trajectory_encoder.EncoderOnlyTransformerModel
+  ntoken: 44 # input dim
+  d_model: 32
+  nhead: 4
+  dim_feedforward: 128
+  nlayers: 2
+  compression_dim: 0 #32 #16 # encoding dim
+#  sequence_len: 5 #4 #16
+  dropout: 0.
+  with_cls: False
+  model_path: "${project_root}/Transformer_RNN/transformer_checkpoint.pth"
+  
+# representation_transformer:
+#   # _target_: mtrl.agent.components.transformer_trajectory_encoder.RepresentationEncoderTransformer
+#   # state_dim: 21
+#   # action_dim: 4
+#   # d_model: 32 #24
+#   # nhead: 8
+#   # dim_feedforward: 128
+#   # nlayers: 3
+#   sequence_len: 20 #15
+#   # dropout: 0.
+#   # model_path: "${project_root}/Transformer_RNN/checkpoints/representation_cls_transformer_checkpoint.pth"
+#   _target_: mtrl.agent.components.encoder.FeedForwardEncoder
+#   feature_dim: 6
+#   hidden_dim: 256
+#   num_layers: 3
+#   should_tie_encoders: False 
+#   multitask_cfg: ${worker.multitask}
+
+# prediction_head_cls:
+# #   _target_: mtrl.agent.components.transformer_trajectory_encoder.ClsPredictionHead
+# #   model_path: "${project_root}/Transformer_RNN/checkpoints/representation_cls_transformer_checkpoint.pth"
+#   latent_dim: 6 #5
+  
+# bnpy_model:
+#   _target_: mtrl.agent.components.transformer_trajectory_encoder.Bnpy_model
+#   bnpy_load_path: "${project_root}/Transformer_RNN/bnpy_save/save"
+
+representation_transformer:
+  _target_: mtrl.agent.components.transformer_trajectory_encoder.RepresentationEncoderTransformer
+  state_dim: 21
+  action_dim: 4
+  d_model: 32 #24
+  nhead: 8
+  dim_feedforward: 128
+  nlayers: 3
+  sequence_len: 20 #15
+  dropout: 0.
+  model_path: "${project_root}/Transformer_RNN/checkpoints/representation_cls_transformer_checkpoint.pth"
+  
+prediction_head_cls:
+  _target_: mtrl.agent.components.transformer_trajectory_encoder.ClsPredictionHead
+  model_path: "${project_root}/Transformer_RNN/checkpoints/representation_cls_transformer_checkpoint.pth"
+  latent_dim: 6 #5
+  
+bnpy_model:
+  _target_: mtrl.agent.components.transformer_trajectory_encoder.Bnpy_model
+  bnpy_load_path: "${project_root}/Transformer_RNN/bnpy_save/save"
