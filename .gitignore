@@ -55,8 +55,6 @@ Metaworld/**/metaworld.egg-info/
 mtrl/**/__pycache__/
 mtrl/**/*.pyc
 
-mtenv
-
 # Uncomment this to ignore YAML configs if needed (optional)
 # *.yaml
 

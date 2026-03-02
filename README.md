@@ -115,8 +115,7 @@ cd ..
 
 # 5. Install the mtenv environment manager
 cd mtenv_repo
-pip install -e .
-pip install -e .[all]
+PYTHONPATH=. pip install -e . --no-build-isolation
 cd ..
 
 # 6. Install the mtrl package

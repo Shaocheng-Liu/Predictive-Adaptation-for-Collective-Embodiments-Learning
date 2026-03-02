@@ -1247,8 +1247,8 @@ class Experiment(collective_experiment.Experiment):
 
         print("\n" + "="*50)
         print(">>> Starting Predictive Adapter Training & Evaluation <<<")
-        print(f"Total training steps: {exp_config.num_wm_train_step}")
-        print(f"Periodic evaluation frequency: {exp_config.wm_eval_freq} steps")
+        print(f"Total training steps: {exp_config.num_pa_train_step}")
+        print(f"Periodic evaluation frequency: {exp_config.pa_eval_freq} steps")
         
         if use_early_stopping:
             print(f"Early Stopping ENABLED: patience={es_patience}, min_delta={es_min_delta}")
@@ -1263,20 +1263,20 @@ class Experiment(collective_experiment.Experiment):
             use_early_stopping = False # Force disable early stopping
 
         start_time = time.time()
-        assert self.wm_start_step >= 0
+        assert self.pa_start_step >= 0
 
         # --- Main training loop ---
-        for step in range(self.wm_start_step, exp_config.num_wm_train_step):
+        for step in range(self.pa_start_step, exp_config.num_pa_train_step):
             
             # === 1. Core training step ===
             self.col_agent.train_predictive_adapter(
                 self.replay_buffer_distill, self.logger, step, tb_log=True
             )
-            self.wm_start_step += 1
+            self.pa_start_step += 1
 
             # === 2. Periodic evaluation and early stopping logic ===
-            if step > 0 and step % exp_config.wm_eval_freq == 0 and has_validation_buffer:
-                print(f"\n--- Running periodic WM evaluation at step {step} ---")
+            if step > 0 and step % exp_config.pa_eval_freq == 0 and has_validation_buffer:
+                print(f"\n--- Running periodic pa evaluation at step {step} ---")
                 
                 # Run evaluation (Note: evaluate_predictive_adapter must handle model.eval() and model.train() switching internally)
                 avg_val_losses = self.col_agent.evaluate_predictive_adapter(
@@ -1343,19 +1343,19 @@ class Experiment(collective_experiment.Experiment):
 
         # --- Post-training handling ---
         
-        # 1. Only save the Final Checkpoint when early stopping was NOT triggered (i.e., completed all num_wm_train_step).
+        # 1. Only save the Final Checkpoint when early stopping was NOT triggered (i.e., completed all num_pa_train_step).
         #    If early stopping was triggered, the Best Checkpoint has already been saved, so there is no need to save a worse-performing Final.
         #    Alternatively, you could force-save one for completeness. Here we keep the original logic but add a condition.
         if not early_stop_triggered and exp_config.save.model:
             print("Saving final model checkpoint...")
             self.col_agent.save_only_predictive_adapter(
                 self.col_model_dir,
-                step=self.wm_start_step, # or exp_config.num_wm_train_step
+                step=self.pa_start_step, # or exp_config.num_pa_train_step
                 retain_last_n=exp_config.save.model.retain_last_n,
             )
-            self.col_agent.save_metadata(self.col_model_dir, step=self.wm_start_step)
+            self.col_agent.save_metadata(self.col_model_dir, step=self.pa_start_step)
             self.col_agent.save_predictive_adapter_optimizer(self.col_model_dir,
-                step=self.wm_start_step,
+                step=self.pa_start_step,
                 retain_last_n=exp_config.save.model.retain_last_n)
 
         self.close_envs()

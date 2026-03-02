@@ -293,7 +293,7 @@ class Experiment(checkpointable.Checkpointable):
                 self.col_start_step = self.col_agent.load_latest_step(model_dir=self.col_model_dir)
 
         elif self.config.experiment.mode == 'evaluate_predictive_adapter':
-            # --- START: Evaluate WM mode initialization logic ---
+            # --- START: Evaluate pa mode initialization logic ---
             
             # 1) Instantiate TransformerAgent
             #    Note: env_obs_shape here is just a placeholder for the model structure,
@@ -347,7 +347,7 @@ class Experiment(checkpointable.Checkpointable):
             self.replay_buffer_val.load_multiple_buffer(buffer_dirs_val)
             print(f"Loaded validation buffer with {len(self.replay_buffer_val)} samples.")
 
-            # --- END: Evaluate WM mode initialization logic ---
+            # --- END: Evaluate pa mode initialization logic ---
         elif self.config.experiment.mode == 'evaluate_collective_transformer':
             # collective network
             if self.config.experiment.evaluate_transformer == "collective_network":
@@ -479,11 +479,11 @@ class Experiment(checkpointable.Checkpointable):
                 self.expert[i].load_latest_step(model_dir=self.expert_model_dir[i])
         elif self.config.experiment.mode == 'train_predictive_adapter':
             # === Only train the TransformerAgent's predictive adapter ===
-            env_obs_shape_wm = [21]
+            env_obs_shape_pa = [21]
             # 1) Instantiate TransformerAgent (uses the same builder as distill_collective_transformer)
             self.col_agent = hydra.utils.instantiate(
                 self.config.transformer_collective_network.builder,
-                env_obs_shape=env_obs_shape_wm,
+                env_obs_shape=env_obs_shape_pa,
                 action_shape=action_shape,
                 action_range=[
                     float(self.action_space.low.min()),
@@ -540,10 +540,10 @@ class Experiment(checkpointable.Checkpointable):
             self.replay_buffer_val.load_multiple_buffer(self.buffer_dir_val)
 
             # 6) Starting step (optional resume)
-            self.wm_start_step = 0
+            self.pa_start_step = 0
             if should_resume_experiment:
                 # Directly reuse the agent's load_latest_step
-                self.wm_start_step = self.col_agent.load_latest_step(model_dir=self.col_model_dir)
+                self.pa_start_step = self.col_agent.load_latest_step(model_dir=self.col_model_dir)
 
         elif self.config.experiment.mode == 'generate_distill_data':
             # 1. Create save path (Buffer Distill)
