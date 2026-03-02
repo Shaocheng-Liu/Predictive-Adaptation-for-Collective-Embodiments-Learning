@@ -88,20 +88,21 @@ class TransformerAgent:
         # components
         if self.use_predictive_adapter and predictive_adapter_cfg is not None:
             # 1. Copy the config dict so we can safely modify it
-            wm_cfg_for_init = dict(predictive_adapter_cfg)
+            pa_cfg_for_init = dict(predictive_adapter_cfg)
 
             # 2. Pop all load-related parameters from the dict
-            load_on_init = wm_cfg_for_init.pop("load_on_init", True) # Read new flag, default True
-            pretrained_dir = wm_cfg_for_init.pop("pretrained_dir", None)
-            pretrained_step = wm_cfg_for_init.pop("pretrained_step", None)
-            freeze_after_load = wm_cfg_for_init.pop("freeze_after_load", True)
+            load_on_init = pa_cfg_for_init.pop("load_on_init", True) # Read new flag, default True
+            pretrained_dir = pa_cfg_for_init.pop("pretrained_dir", None)
+            pretrained_dir = os.path.join(pretrained_dir, experiment, f"predictive_adapter_seed_{seed}")
+            pretrained_step = pa_cfg_for_init.pop("pretrained_step", None)
+            freeze_after_load = pa_cfg_for_init.pop("freeze_after_load", True)
             
             # 3. Always create the PredictiveAdapter instance first (using the clean config)
             self.predictive_adapter = PredictiveAdapter(
                 state_dim=21,
                 action_dim=action_shape[0],
                 task_encoding_dim=self.cls_dim,
-                **wm_cfg_for_init
+                **pa_cfg_for_init
             ).to(self.device)
 
             # 4. Only execute loading logic when load_on_init is True
@@ -125,7 +126,7 @@ class TransformerAgent:
                     for p in self.predictive_adapter.parameters():
                         p.requires_grad_(False)
                     print("[PA] frozen after loading (eval mode).")
-                self._exclude_wm_from_ckpt = True
+                self._exclude_pa_from_ckpt = True
             else:
                 print("[INFO] `load_on_init` is False. Starting with a fresh, untrained Predictive Adapter.")
 
@@ -728,7 +729,7 @@ class TransformerAgent:
             )
 
         if step == 0:  # Print only once
-            print(f"[TA->WM/DEBUG] call compute_loss with:")
+            print(f"[TA->pa/DEBUG] call compute_loss with:")
             print(f"  states{tuple(states.shape)} actions{tuple(actions.shape)} rewards{tuple(rewards.shape)}")
             print(f"  next_states{tuple(next_states.shape)} task_encoding{tuple(task_encoding.shape)}")
 
@@ -781,7 +782,7 @@ class TransformerAgent:
         
         total_dynamics_loss = 0.0
         total_reward_loss = 0.0
-        total_wm_loss = 0.0
+        total_pa_loss = 0.0
         
         buffer_size = len(validation_buffer)
         num_batches = (buffer_size + batch_size - 1) // batch_size
@@ -809,7 +810,7 @@ class TransformerAgent:
                 
                 # Call the predictive_adapter loss computation function
                 next_states = _compress_meta_state(next_states)
-                dynamics_loss, reward_loss, wm_total_loss = self.predictive_adapter.compute_loss(
+                dynamics_loss, reward_loss, pa_total_loss = self.predictive_adapter.compute_loss(
                     state=states,
                     action=actions,
                     next_state=next_states,
@@ -819,12 +820,12 @@ class TransformerAgent:
                 
                 total_dynamics_loss += dynamics_loss.item()
                 total_reward_loss += reward_loss.item()
-                total_wm_loss += wm_total_loss.item()
+                total_pa_loss += pa_total_loss.item()
 
         # Compute average losses
         avg_dynamics_loss = total_dynamics_loss / num_batches
         avg_reward_loss = total_reward_loss / num_batches
-        avg_total_loss = total_wm_loss / num_batches
+        avg_total_loss = total_pa_loss / num_batches
 
         self.predictive_adapter.train()
         
@@ -850,7 +851,7 @@ class TransformerAgent:
         
         total_dynamics_loss = 0.0
         total_reward_loss = 0.0
-        total_wm_loss = 0.0
+        total_pa_loss = 0.0
         
         buffer_size = len(validation_buffer)
         if buffer_size == 0:
@@ -897,7 +898,7 @@ class TransformerAgent:
                 next_states = _compress_meta_state(next_states)
                 
                 # Compute loss
-                dynamics_loss, reward_loss, wm_total_loss = self.predictive_adapter.compute_loss(
+                dynamics_loss, reward_loss, pa_total_loss = self.predictive_adapter.compute_loss(
                     state=states,
                     action=actions,
                     next_state=next_states,
@@ -907,7 +908,7 @@ class TransformerAgent:
                 
                 total_dynamics_loss += dynamics_loss.item()
                 total_reward_loss += reward_loss.item()
-                total_wm_loss += wm_total_loss.item()
+                total_pa_loss += pa_total_loss.item()
 
         # Compute averages
         # Note: if batch sizes are inconsistent, a sample-weighted average would be better,
@@ -915,7 +916,7 @@ class TransformerAgent:
         if num_batches > 0:
             avg_dynamics_loss = total_dynamics_loss / num_batches
             avg_reward_loss = total_reward_loss / num_batches
-            avg_total_loss = total_wm_loss / num_batches
+            avg_total_loss = total_pa_loss / num_batches
         else:
             avg_dynamics_loss = avg_reward_loss = avg_total_loss = 0.0
 
@@ -1280,7 +1281,7 @@ class TransformerAgent:
             List[Tuple[ModelType, str]]: list of tuples of (model, name).
         """
         items = [(value, key) for key, value in self._components.items()]
-        if getattr(self, "_exclude_wm_from_ckpt", False):
+        if getattr(self, "_exclude_pa_from_ckpt", False):
             items = [(m, n) for (m, n) in items if n != "predictive_adapter"]
         return items
 
@@ -1294,7 +1295,7 @@ class TransformerAgent:
             List[Tuple[OptimizerType, str]]: list of tuples of (optimizer, name).
         """
         items = [(value, key) for key, value in self._optimizers.items()]
-        if getattr(self, "_exclude_wm_from_ckpt", False):
+        if getattr(self, "_exclude_pa_from_ckpt", False):
             items = [(opt, n) for (opt, n) in items if n != "predictive_adapter"]
         return items
 
@@ -1535,10 +1536,10 @@ class TransformerAgent:
             raise FileNotFoundError(f"No predictive_adapter_*.pt found under {model_dir}")
 
         # Load only the predictive_adapter
-        wm_path = os.path.join(model_dir, f"predictive_adapter_{step}.pt")
-        state = torch.load(wm_path, map_location=self.device)
+        pa_path = os.path.join(model_dir, f"predictive_adapter_{step}.pt")
+        state = torch.load(pa_path, map_location=self.device)
         self.predictive_adapter.load_state_dict(state)
-        print(f"[TransformerAgent] predictive_adapter loaded from {wm_path}")
+        print(f"[TransformerAgent] predictive_adapter loaded from {pa_path}")
 
         # Optional: load optimizer
         if load_optimizer and hasattr(self, "_optimizers") and "predictive_adapter" in self._optimizers:

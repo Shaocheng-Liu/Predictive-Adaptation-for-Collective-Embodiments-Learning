@@ -20,14 +20,14 @@ set -euo pipefail
 
 ### ===================== Configurable Variables ===================== ###
 # Experiment name — controls which experiment model directory is used.
-EXPERIMENT_NAME="${EXPERIMENT_NAME:-none}"
+EXPERIMENT_NAME="${EXPERIMENT_NAME:-task_dyn_true}"
 
 # Seed for reproducibility
-SEED="${SEED:-1}"
+SEED="${SEED:-3}"
 
 # Transformer model path — override the default representation transformer checkpoint.
 # If empty, the default path from the config YAML will be used.
-TRANSFORMER_PATH="${TRANSFORMER_PATH:-}"
+TRANSFORMER_PATH="${TRANSFORMER_PATH:-"${PROJECT_ROOT}/Transformer_RNN/checkpoints_task_dyn_true_seed_3/representation_cls_transformer_checkpoint.pth"}"
 
 SCRIPT_EXTRA_ARGS=()
 EVAL_ROBOT=""

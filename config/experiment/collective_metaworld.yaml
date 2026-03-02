@@ -42,7 +42,7 @@ distill_scripted_policy: False
 
 #------------ evaluate_collective_transformer -------------
 evaluate_transformer: "agent" #"collective_network" # collective_network / agent / scripted
-evaluate_episodes: 1
+evaluate_episodes: 100
 evaluate_critic_rounds: 5
 recording_eval_episodes: 1
 
@@ -75,6 +75,6 @@ envs_to_exclude_during_training: []
 # ["reach-v2", "push-v2", "pick-place-v2", "door-open-v2", "drawer-open-v2", "drawer-close-v2", "button-press-topdown-v2", "peg-insert-side-v2", "window-open-v2", "window-close-v2"]
 
 #--------------------- predictive adapter --------------------------
-num_wm_train_step: 200000
-wm_eval_freq: 5000 
+num_pa_train_step: 200000
+pa_eval_freq: 5000 
 early_stopping: False

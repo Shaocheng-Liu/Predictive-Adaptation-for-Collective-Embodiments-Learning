@@ -20,7 +20,7 @@ simnorm_dim: 8
 # Predictive adapter training parameters
 reward_bounds: [-10, 10]  # Min/max reward for discretization
 
-pretrained_dir: "${project_root}/logs/experiment_test/model_dir/model_predictive_adapter"  # Directory where the world model was saved during training
+pretrained_dir: "${project_root}/logs/experiment_test/model_dir"  # Directory where the world model was saved during training
 pretrained_step: null                                      # Specify an integer step; null means auto-find metadata or latest
 freeze_after_load: true                                     # Typically do not train the world model further during distillation
 load_on_init: true

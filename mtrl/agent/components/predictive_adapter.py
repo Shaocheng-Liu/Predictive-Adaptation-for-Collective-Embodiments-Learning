@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from mtrl.agent.components import base as base_component
 from mtrl.utils.types import TensorType
 
-from .wm_math import DRegCfg, soft_ce, two_hot_inv, symlog
+from .pa_math import DRegCfg, soft_ce, two_hot_inv, symlog
 
 try:
     Mish = nn.Mish  # Use PyTorch built-in if available
