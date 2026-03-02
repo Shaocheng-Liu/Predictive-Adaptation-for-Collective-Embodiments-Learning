@@ -1,0 +1,46 @@
+<mujocoinclude>
+  <compiler angle="radian" autolimits="true" inertiafromgeom="auto" inertiagrouprange="4 5"/>
+  <option integrator="implicitfast"/>
+
+  <asset>
+    <material name="xyz_col" rgba="0.3 0.3 1.0 0.5" shininess="0" specular="0.5"/>
+    
+    <mesh name="base_link" file="assets/base_link.stl"/>
+    <mesh name="shoulder_link" file="assets/shoulder_link.stl"/>
+    <mesh name="half_arm_1_link" file="assets/half_arm_1_link.stl"/>
+    <mesh name="half_arm_2_link" file="assets/half_arm_2_link.stl"/>
+    <mesh name="forearm_link" file="assets/forearm_link.stl"/>
+    <mesh name="spherical_wrist_1_link" file="assets/spherical_wrist_1_link.stl"/>
+    <mesh name="spherical_wrist_2_link" file="assets/spherical_wrist_2_link.stl"/>
+    <mesh name="bracelet_with_vision_link" file="assets/bracelet_with_vision_link.stl"/>
+
+    <mesh file="../objects/meshes/xyz_base/base.stl" name="base_mesh"/>
+    <mesh file="../objects/meshes/xyz_base/eGripperBase.stl" name="eGripperBase"/>
+    <mesh file="../objects/meshes/xyz_base/head.stl" name="head_mesh"/>
+  </asset>
+
+  <default>
+    <default class="gen3">
+      <joint axis="0 0 1" damping="10" armature="0.1" frictionloss="0.1"/>
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" group="2" rgba="0.75294 0.75294 0.75294 1"/>
+      </default>
+      <default class="collision">
+        <geom type="mesh" group="3"/>
+      </default>
+      
+      <default class="large_actuator">
+        <position kp="2000" forcerange="-105 105"/>
+      </default>
+      <default class="small_actuator">
+        <position kp="500" forcerange="-52 52"/>
+      </default>
+
+      <default class="base_col">
+        <geom conaffinity="1" condim="4" contype="1" group="4" margin="0.001" material="xyz_col" solimp=".8 .9 .01" solref=".02 1"/>
+      </default>
+
+      <site size="0.001" rgba="0.5 0.5 0.5 0.3" group="4"/>
+    </default>
+  </default>
+</mujocoinclude>

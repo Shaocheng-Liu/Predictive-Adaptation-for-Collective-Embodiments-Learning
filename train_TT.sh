@@ -1,0 +1,3 @@
+python3 -u Transformer_RNN/RepresentationTransformerWithCLS_task_seed_3.py
+python3 -u Transformer_RNN/RepresentationTransformerWithCLS_task_seed_4.py
+python3 -u Transformer_RNN/RepresentationTransformerWithCLS_task_seed_5.py

@@ -1,0 +1,77 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Package metadata
+*.egg-info/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Distribution / packaging
+build/
+dist/
+*.spec
+
+# Logs and debug
+logs
+*.log
+*.out
+outputs
+
+# OS or editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IPython / Jupyter
+.ipynb_checkpoints/
+
+# VSCode
+.vscode/
+
+# Pyre/Pylint/etc
+.pyre/
+.mypy_cache/
+.pytest_cache/
+coverage.*
+
+# Ignore all auto-generated config backups or dumps
+*.bak
+*.tmp
+*.old
+
+# Specific to your project (Metaworld + MTRL)
+Metaworld/**/*.pyc
+Metaworld/**/__pycache__/
+Metaworld/**/metaworld.egg-info/
+mtrl/**/__pycache__/
+mtrl/**/*.pyc
+
+mtenv
+
+# Uncomment this to ignore YAML configs if needed (optional)
+# *.yaml
+
+Transformer_RNN/tensorboard_log
+Transformer_RNN/embedding_log*
+Transformer_RNN/decision_tf_dataset*
+Transformer_RNN/bnpy_save/data/
+Transformer_RNN/bnpy_save*
+Transformer_RNN/dataset*
+Transformer_RNN/graphics
+Transformer_RNN/checkpoints*
+
+train_log
+
+# Diffusion policy baseline
+diffusion_policy/checkpoints*
+diffusion_policy/results*
+diffusion_policy/data*

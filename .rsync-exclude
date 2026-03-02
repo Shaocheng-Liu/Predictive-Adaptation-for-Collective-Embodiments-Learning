@@ -1,0 +1,10 @@
+logs/experiment_test/buffer/buffer
+logs/experiment_test/buffer/buffer_distill_tmp
+logs/experiment_test/buffer/buffer_distill
+logs/experiment_test/buffer/online_buffer_*
+logs/experiment_test/model_dir/model_gen3_*
+logs/experiment_test/model_dir/model_sawyer_*
+logs/experiment_test/model_dir/model_ur10e_*
+logs/experiment_test/model_dir/model_xarm7_*
+logs/experiment_test/model_dir/model_unitree_z1_*
+logs/experiment_test/evaluation_models

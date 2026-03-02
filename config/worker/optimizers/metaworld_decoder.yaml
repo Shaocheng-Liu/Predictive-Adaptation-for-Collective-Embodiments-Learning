@@ -1,0 +1,7 @@
+# @package _group_.decoder
+
+_target_: torch.optim.Adam
+lr: 3e-4
+# lr: 1e-3
+betas: [0.9, 0.999]
+weight_decay: 0.0000001

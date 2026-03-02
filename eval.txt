@@ -1,0 +1,30 @@
+
+RESULTS expert:
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/button-press-topdown-v2:Evaluation: robot viperx [100.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/door-open-v2:Evaluation: robot viperx [92.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/door-open-v2:Evaluation: robot viperx [92.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/door-open-v2:Evaluation: robot viperx [92.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/door-open-v2:Evaluation: robot viperx [92.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/door-open-v2:Evaluation: robot viperx [92.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/door-open-v2:Evaluation: robot viperx [92.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/door-open-v2:Evaluation: robot viperx [92.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/drawer-open-v2:Evaluation: robot viperx [100.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/faucet-open-v2:Evaluation: robot viperx [100.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/peg-insert-side-v2:Evaluation: robot ur10e [90.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/peg-insert-side-v2:Evaluation: robot ur10e [73.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/peg-insert-side-v2:Evaluation: robot ur10e [100.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/peg-insert-side-v2:Evaluation: robot ur10e [94.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/peg-insert-side-v2:Evaluation: robot viperx [88.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/peg-insert-side-v2:Evaluation: robot viperx [76.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/peg-insert-side-v2:Evaluation: robot viperx [100.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/pick-place-v2:Evaluation: robot viperx [100.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/push-v2:Evaluation: robot ur10e [100.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/push-v2:Evaluation: robot ur10e [91.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/push-v2:Evaluation: robot viperx [100.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/reach-v2:Evaluation: robot gen3 [100.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/reach-v2:Evaluation: robot viperx [100.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/window-close-v2:Evaluation: robot viperx [100.] from 100
+/root/bayes-tmp/sherma/RLCE/logs/results/worker/window-open-v2:Evaluation: robot viperx [100.] from 100
+RESULTS collective network:
+RESULTS student:
+
