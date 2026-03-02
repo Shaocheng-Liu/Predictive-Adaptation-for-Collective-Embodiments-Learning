@@ -26,8 +26,12 @@ EXPERIMENT_NAME="${EXPERIMENT_NAME:-none}"
 SEED="${SEED:-1}"
 
 # Transformer model path — override the default representation transformer checkpoint.
-# If empty, the default path from the config YAML will be used.
+# If empty and EXPERIMENT_NAME is not "none", auto-derived from experiment name and seed.
+# If empty and EXPERIMENT_NAME is "none", the default path from the config YAML will be used.
 TRANSFORMER_PATH="${TRANSFORMER_PATH:-}"
+if [[ -z "$TRANSFORMER_PATH" && "$EXPERIMENT_NAME" != "none" ]]; then
+    TRANSFORMER_PATH="${PROJECT_ROOT}/Transformer_RNN/checkpoints_${EXPERIMENT_NAME}_seed_${SEED}/representation_cls_transformer_checkpoint.pth"
+fi
 
 ### ===================== Helper Functions ===================== ###
 

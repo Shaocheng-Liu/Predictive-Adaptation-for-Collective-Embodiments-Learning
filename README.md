@@ -149,6 +149,21 @@ The project uses [Hydra](https://hydra.cc/) for configuration management. Key co
 
 - **`config/transformer_collective_network/`** — Architecture and optimizer settings for the collective network and predictive adapter.
 
+#### Experiment Variables
+
+Both `train.sh` and `eval.sh` support the following environment variables to control experiment-specific paths:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `EXPERIMENT_NAME` | `"none"` | Experiment identifier. Controls model directory layout and auto-derives transformer checkpoint paths. |
+| `SEED` | `1` | Random seed for reproducibility. |
+| `TRANSFORMER_PATH` | (auto) | Override the representation transformer checkpoint path. When not set and `EXPERIMENT_NAME` is not `"none"`, it is automatically derived as `Transformer_RNN/checkpoints_${EXPERIMENT_NAME}_seed_${SEED}/representation_cls_transformer_checkpoint.pth`. |
+
+When `EXPERIMENT_NAME` is set (e.g. `"my_exp"`), all model directories become experiment-aware:
+- **Collective agent models**: `model_dir/${EXPERIMENT_NAME}/model_col_seed_${SEED}/`
+- **Predictive adapter models**: `model_dir/${EXPERIMENT_NAME}/model_predictive_adapter_seed_${SEED}/`
+- **Transformer checkpoints**: `Transformer_RNN/checkpoints_${EXPERIMENT_NAME}_seed_${SEED}/`
+
 ### Pipeline Overview
 
 The full training pipeline follows these steps:
@@ -167,7 +182,12 @@ Step 5: Evaluate
 
 ### Step-by-Step Execution
 
-You can either **source `train.sh`** to load helper functions and call them individually, or run each step directly:
+You can either **source `train.sh`** to load helper functions and call them individually, or run each step directly. To run a named experiment, set `EXPERIMENT_NAME` and `SEED` before calling:
+
+```bash
+export EXPERIMENT_NAME="my_exp"
+export SEED=3
+```
 
 #### Step 1: Train Expert Workers
 
@@ -213,6 +233,8 @@ train_predictive_adapter
 # (Or directly:)
 python3 -u main.py setup=metaworld env=metaworld-mt1 worker.multitask.num_envs=1 \
     experiment.mode=train_predictive_adapter \
+    experiment.experiment="${EXPERIMENT_NAME}" \
+    setup.seed="${SEED}" \
     transformer_collective_network.predictive_adapter.load_on_init=False
 
 # Train the representation transformer
@@ -229,7 +251,9 @@ distill_collective
 
 # (Or directly:)
 python3 -u main.py setup=metaworld env=metaworld-mt1 worker.multitask.num_envs=1 \
-    experiment.mode=distill_collective_transformer
+    experiment.mode=distill_collective_transformer \
+    experiment.experiment="${EXPERIMENT_NAME}" \
+    setup.seed="${SEED}"
 ```
 
 #### Step 5: Evaluate
@@ -237,7 +261,7 @@ python3 -u main.py setup=metaworld env=metaworld-mt1 worker.multitask.num_envs=1
 Evaluate the trained collective policy on different robots and tasks:
 
 ```bash
-# Evaluate all robots on all tasks
+# Evaluate all robots on all tasks (using default experiment)
 bash eval.sh
 
 # Evaluate a specific robot
@@ -246,8 +270,14 @@ bash eval.sh sawyer
 # Evaluate a specific robot on a specific task
 bash eval.sh sawyer reach-v2
 
+# Evaluate with a named experiment and seed
+EXPERIMENT_NAME="my_exp" SEED=3 bash eval.sh sawyer reach-v2
+
 # Pass extra Hydra overrides
 bash eval.sh sawyer reach-v2 setup.seed=5
+
+# Override transformer checkpoint path explicitly
+TRANSFORMER_PATH="/path/to/checkpoint.pth" bash eval.sh sawyer reach-v2
 ```
 
 

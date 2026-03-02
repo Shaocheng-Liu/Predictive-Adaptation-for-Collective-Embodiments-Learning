@@ -84,6 +84,8 @@ class TransformerAgent:
         self.seq_len = 20
 
         self.use_predictive_adapter = use_predictive_adapter
+        self.experiment = experiment
+        self.seed = seed
 
         # components
         if self.use_predictive_adapter and predictive_adapter_cfg is not None:
@@ -93,6 +95,7 @@ class TransformerAgent:
             # 2. Pop all load-related parameters from the dict
             load_on_init = wm_cfg_for_init.pop("load_on_init", True) # Read new flag, default True
             pretrained_dir = wm_cfg_for_init.pop("pretrained_dir", None)
+            pretrained_dir = os.path.join(pretrained_dir, experiment, f"model_predictive_adapter_seed_{seed}")
             pretrained_step = wm_cfg_for_init.pop("pretrained_step", None)
             freeze_after_load = wm_cfg_for_init.pop("freeze_after_load", True)
             
